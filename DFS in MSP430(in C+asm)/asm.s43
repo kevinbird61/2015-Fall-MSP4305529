@@ -1,0 +1,40 @@
+#include "msp430.h"      
+    PUBLIC  DFS                     ; make the main label vissible
+    RSEG    CODE                    ; place program in 'CODE' segment
+DFS:
+    // R4 for level , and R5 for array index
+    mov.w #1,R4
+    mov.w #1,R5
+DFS_Start:
+    ; R12 for level , R13 for A , R14 for B , R4 for level , R5 for index
+    mov.w @R13,0(R14)                   ; Push the value in B[]
+    cmp R4,R12                          ; Compare the current level and dest
+    ; if 0 => go back
+    jz BACK                             ; return
+    ; do the right child
+    push.w R13                          ; store the current A address
+    push.w R4                           ; store the current level
+    push.w R5                           ; store the current index
+    ;
+    inc R4                              ; increase the level
+    rla R5                              ; index = index * 2
+    ;
+    add.w R5 , R13                      ; go the next A address
+    add.w #2 , R14                      ; go the next B address
+    calla #DFS_Start                          ; go to next level
+    ; do the left child
+    pop.w R5                            ; load the current index
+    pop.w R4                            ; load the current level
+    pop.w R13                           ; load the current A address
+    ;
+    inc R4                              ; increase the level
+    inc R5                              ; Because address is add by 2  
+    rla R5                              ; index = index * 1
+    ;
+    add.w R5 , R13                      ; go to next A address
+    dec R5                              ; because 
+    add.w #2 , R14                      ; go to next B address
+    calla #DFS_Start                          ; go to next address
+BACK:
+    RETA                                ; return (in C : using 20bit - calla )
+    END

@@ -1,0 +1,146 @@
+#include "msp430.h"                     ; #define controlled include file
+
+        NAME    main                    ; module name
+
+        PUBLIC  main                    ; make the main label vissible
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        RSEG    CSTACK                  ; pre-declaration of segment
+        RSEG    CODE                    ; place program in 'CODE' segment
+;========================================Delay for 2 s For check========================================//   
+Delay2S_C:
+        mov #32767,R4                   ; cycle = 2
+        jmp sub_2_c                       ; cycle = 2
+sub_2_c:
+        dec R4                          ; cycle = 1
+        mov #5,R5                      ; cycle = 2
+;===================================
+sub_2_1_c:
+        nop
+        nop
+        mov.b &P2IN , R10               ; cycle = 2
+        bit.b #00000010b , R10          ; cycle = 2
+        jnz BACK                         ; cycle = 2
+        dec R5                          ; cycle = 1
+        cmp #0,R5                       ; cycle = 1
+        jnz sub_2_1_c                     ; cycle = 2
+;===================================
+        cmp #0,R4                       ; cycle = 1
+        jz BACK                         
+        jmp sub_2_c                       ; cycle = 2
+;========================================Delay for 2 s For check========================================//
+;========================================Delay for 2 s ========================================//   
+Delay2S:
+        mov #32767,R4                   ; cycle = 2
+        jmp sub_2                       ; cycle = 2
+sub_2:
+        dec R4                          ; cycle = 1
+        mov #14,R5                      ; cycle = 2
+;===================================
+sub_2_1:
+        dec R5                          ; cycle = 1
+        cmp #0,R5                       ; cycle = 1
+        jnz sub_2_1                     ; cycle = 2
+;===================================
+        cmp #0,R4                       ; cycle = 1
+        jz BACK                         
+        jmp sub_2                       ; cycle = 2
+BACK:
+        ret
+;========================================Delay for 2 s ========================================//
+;========================================Delay for 1 s ========================================//   
+Delay1S:
+        mov #32767,R4                   ; cycle = 2
+        jmp sub_1                       ; cycle = 2
+sub_1:
+        dec R4                          ; cycle = 1
+        mov #7,R5                      ; cycle = 2
+;===================================
+sub_1_1:
+        dec R5                          ; cycle = 1
+        cmp #0,R5                       ; cycle = 1
+        jnz sub_1_1                     ; cycle = 2
+;===================================
+        cmp #0,R4                       ; cycle = 1
+        jz BACK                         
+        jmp sub_1                       ; cycle = 2
+;========================================Delay for 1 s ========================================//
+;========================================Delay for 0.5 s ========================================//   
+Delay0_5S:
+        mov #32767,R4                   ; cycle = 2
+        jmp sub_05                      ; cycle = 2
+sub_05:
+        dec R4                          ; cycle = 1
+        mov #4,R5                      ; cycle = 2
+;===================================
+sub_05_1:
+        dec R5                          ; cycle = 1
+        cmp #0,R5                       ; cycle = 1
+        jnz sub_05_1                     ; cycle = 2
+;===================================
+        cmp #0,R4                       ; cycle = 1
+        jz BACK                         
+        jmp sub_05                       ; cycle = 2
+;========================================Delay for 0.5 s ========================================//
+init:   MOV     #SFE(CSTACK), SP        ; set up stack
+
+main:   NOP                             ; main program
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog t
+        ; Initialize the Pin2.1(Button) and Pin1.0(LED)
+        mov.b #00000001b , P1DIR        ; Setting Direction
+        mov.b #00000010b , P2DIR        
+        mov.b #00000010b , &P2REN        ; Reference Voltage for button (Setting Open)
+        mov.b #00000000b , P1OUT        ; Turn off the light
+        mov.b #00000010b , P2OUT        ; Setting => active high 
+        mov #5 , R6                     ; 5 times
+        mov SP , R11                    ; Store the start point
+;=========Button Trigger for 5 times============
+ForFivePress:
+        cmp #0,R6
+        jz ShowLED
+        mov.b &P2IN , R10               ; Testing value store in R10
+        bit.b #00000010b , R10          ; &
+        jnz ForFivePress                ; if value == 0 => R2IN is trigger => do next
+        call #Delay2S_C                   ; z flag == 0 => do delay test 
+        cmp #0 , R4
+        jnz ShortPress
+LongPress:
+        dec R6                          ; for iteration decrement
+        push.w #1
+        call #Delay0_5S
+        jmp ForFivePress
+ShortPress:
+        dec R6
+        push.w #0
+        call #Delay0_5S
+        jmp ForFivePress
+ShowLED:
+        mov.w #5 , R7                   ; For doing 5 times
+ReadLED:
+        cmp #0 , R7                     ; if R7 == 0 => go back to start
+        jz main                         ; R7==0 back to main
+        sub.w #2 , R11
+        mov.w @R11 , R15
+        //pop.w R15
+        cmp #0 , R15                    ; Compare=> 0 for short , 1 for long
+        jz ShowShort
+ShowLong:
+        dec R7
+        XOR.B #00000001b , P1OUT        ; Light it up
+        call #Delay2S                   ; 2 second wait
+        XOR.B #00000001b , P1OUT        ; Turn it off
+        call #Delay1S
+        jmp ReadLED
+ShowShort:
+        dec R7
+        XOR.B #00000001b , P1OUT        ; Light it up
+        call #Delay0_5S
+        XOR.B #00000001b , P1OUT        ; Turn it off
+        call #Delay1S
+        jmp ReadLED
+
+        JMP $                           ; jump to current location '$'
+                                        ; (endless loop)
+        END

@@ -1,0 +1,175 @@
+#include "msp430.h"                     ; #define controlled include file
+
+        NAME    main                    ; module name
+
+        PUBLIC  main                    ; make the main label vissible
+                                        ; outside this module
+        ORG     0FFFEh
+        DC16    init                    ; set reset vector to 'init' label
+
+        RSEG    CSTACK                  ; pre-declaration of segment
+        RSEG    CODE                    ; place program in 'CODE' segment
+;========================================Delay for 5 s ========================================//
+Delay5S:
+        mov #32767,R4                   ; cycle = 2
+        jmp sub_5                       ; cycle = 2
+sub_5:
+        dec R4                          ; cycle = 1
+        mov #32,R5                     ; cycle = 2
+;===========32======================
+sub_5_1:                                ; Loop for 160 times
+        dec R5                          ; cycle = 1
+        cmp #0,R5                       ; cycle = 1
+        jnz sub_5_1                     ; cycle = 2
+;===========32======================       
+        cmp #0,R4                       ; cycle = 1
+        jz BACK
+        jmp sub_5                       ; cycle = 2
+BACK:
+        ret
+;========================================Delay for 5 s ========================================//        
+;========================================Delay for 2 s ========================================//   
+Delay2S:
+        mov #32767,R4                   ; cycle = 2
+        jmp sub_2                       ; cycle = 2
+sub_2:
+        dec R4                          ; cycle = 1
+        mov #14,R5                      ; cycle = 2
+;===================================
+sub_2_1:
+        dec R5                          ; cycle = 1
+        cmp #0,R5                       ; cycle = 1
+        jnz sub_2_1                     ; cycle = 2
+;===================================
+        cmp #0,R4                       ; cycle = 1
+        jz BACK                         
+        jmp sub_2                       ; cycle = 2
+;========================================Delay for 2 s ========================================//
+;========================================Delay for 1 s ========================================//
+Delay1S:
+        mov #32767,R4
+        jmp sub_1
+sub_1:
+        dec R4
+        mov #8,R5
+;===================================
+sub_1_1:
+        dec R5
+        cmp #0,R5
+        jnz sub_1_1
+;===================================
+        cmp #0,R4
+        jz BACK
+        jmp sub_1
+;========================================Delay for 1 s ========================================//
+;========================================Delay for 0.6 s ========================================//
+Delay_6S:
+        mov #32767,R4
+        jmp sub_06
+sub_06:
+        dec R4
+        mov #4,R5
+;===================================
+sub_06_1:
+        dec R5
+        cmp #0,R5
+        jnz sub_06_1
+;===================================
+        cmp #0,R4
+        jz BACK
+        jmp sub_06
+;========================================Delay for 0.6 s ========================================//
+;===============================================================;
+init:   MOV     #SFE(CSTACK), SP        ; set up stack
+
+main:   NOP                             ; main program
+        MOV.W   #WDTPW+WDTHOLD,&WDTCTL  ; Stop watchdog timer
+        ; Initialize and Setting the LED
+        MOV.b #00001101b , P1DIR
+        MOV.b #10000000b , P4DIR
+        MOV.b #00000000b , P1OUT
+        MOV.b #00000000b , P4OUT
+        MOV.b #00010000b , P1REN
+wait:
+        bit.b #00010000b , &P1IN
+        jz wait
+        ; LED p1 = Red , p4 = Green , All Turn on
+        ;---------Set for LED status : both light up
+        mov.b #00001101b , &P1OUT
+        mov.b #10000000b , &P4OUT
+        ;---------------------------
+        ; For Delay 5s
+        call #Delay5S
+        ; And Then Turn off the Two Light
+        XOR.b #00001101b , &P1OUT
+        XOR.b #10000000b , &P4OUT
+        ; Print "0" : - - - - - (1)
+        XOR.b #00001001b , &P1OUT       ; Light up the RED LED and status
+        call #Delay2S                   ; Delay 2S 
+        XOR.b #00001001b , &P1OUT       ; Turn off the RED LED
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "0" : - - - - - (2)
+        XOR.b #00001001b , &P1OUT
+        call #Delay2S
+        XOR.b #00001001b , &P1OUT
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "0" : - - - - - (3)
+        XOR.b #00001001b , &P1OUT
+        call #Delay2S
+        XOR.b #00001001b , &P1OUT
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "0" : - - - - - (4)
+        XOR.b #00001001b , &P1OUT
+        call #Delay2S
+        XOR.b #00001001b , &P1OUT
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "0" : - - - - - (5)
+        XOR.b #00001001b , &P1OUT
+        call #Delay2S
+        XOR.b #00001001b , &P1OUT
+        ; Delay For 5S ======================
+        call #Delay5S
+        ; Delay For 5S ======================
+        ; Print "3" : . . . - - (1)
+        XOR.b #10000000b , &P4OUT       ; Light up the Green Light
+        XOR.b #00000100b , &P1OUT       ; Status => on
+        call #Delay1S
+        XOR.b #10000000b , &P4OUT       ; Ture off the Green Light
+        XOR.b #00000100b , &P1OUT       ; Status => off
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "3" : . . . - - (2)
+        XOR.b #10000000b , &P4OUT       ; Light up the Green Light
+        XOR.b #00000100b , &P1OUT       ; Status => on
+        call #Delay1S
+        XOR.b #10000000b , &P4OUT       ; Ture off the Green Light
+        XOR.b #00000100b , &P1OUT       ; Status => off
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "3" : . . . - - (3)
+        XOR.b #10000000b , &P4OUT       ; Light up the Green Light
+        XOR.b #00000100b , &P1OUT       ; Status => on
+        call #Delay1S
+        XOR.b #10000000b , &P4OUT       ; Ture off the Green Light
+        XOR.b #00000100b , &P1OUT       ; Status => off
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "3" : . . . - - (4)
+        XOR.b #00001001b , &P1OUT       ; Light up the Red Light
+        call #Delay2S
+        XOR.b #00001001b , &P1OUT       ; Ture off the Red Light
+        ; Delay 0.6s
+        call #Delay_6S
+        ; Print "3" : . . . - - (5)
+        XOR.b #00001001b , &P1OUT       ; Light up the Red Light
+        call #Delay2S
+        XOR.b #00001001b , &P1OUT       ; Ture off the Red Light
+
+        
+        JMP $                           ; jump to current location '$'
+                                        ; (endless loop)
+        END
