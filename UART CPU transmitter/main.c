@@ -79,7 +79,7 @@ int main( void )
   TA0CTL |= TASSEL_1 + ID_2 + MC_1 + TACLR;
   TA0CCR0 = 32768;
   TA0CCTL0 = CCIE;
-  
+
   __bis_SR_register(GIE);
   while(1){};
   return 0;
@@ -91,6 +91,7 @@ TIMER A1 ISR (TA1CCIFG0)
 __interrupt void TIMER1_A0_ISR(void){
   // read signal_store[] , and then convert to uart signal
   int i;
+  // check_result == 1 => piano
   if(check_result==1){
     // deliver the signal (Using UCA0TXBUF) => for 8 byte // 
     for(i = 0 ; i < package ; i++){
@@ -104,7 +105,8 @@ __interrupt void TIMER1_A0_ISR(void){
     }
   }
   else{
-   // local_signal
+    // check_result == 0 => autoplay
+    // local_signal
     int size = SIZE;
     for(i=0;i<size;i++){
       next_pattern(pattern[i]);
