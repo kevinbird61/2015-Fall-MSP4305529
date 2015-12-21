@@ -1,23 +1,31 @@
 #include <msp430.h>
 
 #define SIZE 2
-/* Pattern */
+/* Pattern , which use with function : next_pattern()*/
 int pattern[SIZE] = {1,2};
 /* store the number of one transmition */
 int package = 8;
-/* every 0.5 sec , each change ; first byte => start up */
+/* every 0.5 sec , each change ; first byte => start up 
+signal_store : for one signal instruction from piano
+local_signal : for one signal instruction by autoplay (src : pattern[]) ;
+*/
 int signal_store[8] = {255,0,0,0,0,0,0,0};
 int local_signal[8] = {255,0,0,0,0,0,0,0};
 /* Retain status , 0 for autoplay and 1 for piano */
 int status = 0;
 /* For TA1 , if when piano : 1 , autoplay = 0 */
 int check_result = 0;
-/* Function */
+/* Function :
+check_status() : check is it time to change to autoplay ? or have piano input recently.
+GPIO_IE_UP() : enabled GPIO interrupt
+next_pattern(int select) : modulize the pattern show
+*/
 void check_status();
 void GPIO_IE_UP();
 void next_pattern(int select); // read array
-void clear();
-/*LED light*/
+/*LED light
+mode: 0 -> turn off ; 1 -> light up
+*/
 void LED0(int mode);
 void LED1(int mode);
 void LED2(int mode);
@@ -303,6 +311,7 @@ void check_status(){
 }
 
 void next_pattern(int select){
+  // Enable using integer to control LED pattern
   switch(select){
     case 0:
       LED0(1);
