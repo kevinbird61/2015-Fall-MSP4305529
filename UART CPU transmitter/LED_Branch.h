@@ -1,6 +1,6 @@
 #include <msp430.h>
 
-int local_signal[8] = {255,0,0,0,0,0,0,0};
+int local_signal[8] = {30,0,0,0,0,0,0,0};
 void next_pattern(int select); // read array
 /*LED light
 mode: 0 -> turn off ; 1 -> light up
@@ -541,7 +541,7 @@ void Branch10(int color){
 void next_pattern(int select){
   // Enable using integer to control LED pattern
   switch(select){
-    // 0~21 : LED on ; 22 ~ 32 : Branch-R ; 33 ~ 43 : Branch-G ; 44 ~ 55 : Branch-B
+    // 0~21 : LED on ; 22 ~ 32 : Branch-R ; 33 ~ 43 : Branch-G ; 44 ~ 54 : Branch-B ; 54 ~ ? Special Color
     case 0:
       LED0(1);
       break;
@@ -711,7 +711,59 @@ void next_pattern(int select){
       Branch10(2);  
     break; 
     // Other Color change - add later
-    
+    case 55:
+       // For Testing
+      LED0(1);
+      LED1(1);
+      LED2(1);
+      LED3(1);
+      LED4(1);
+    break;
+    case 56:
+      LED11(1);
+      LED12(1);
+      LED13(1);
+      LED14(1);
+      LED15(1);
+      LED16(1);
+      LED17(1);
+      LED18(1);
+      break;
+    case 70:
+      // turn off all
+      LED0(0);
+      LED1(0);
+      LED2(0);
+      LED3(0);
+      LED4(0);
+      LED5(0);
+      LED6(0);
+      LED7(0);
+      LED8(0);
+      LED9(0);
+      LED10(0);
+      LED11(0);
+      LED12(0);
+      LED13(0);
+      LED14(0);
+      LED15(0);
+      LED16(0);
+      LED17(0);
+      LED18(0);
+      LED19(0);
+      LED20(0);
+      LED21(0);
+      Branch0(6);
+      Branch1(6);
+      Branch2(6);
+      Branch3(6);
+      Branch4(6);
+      Branch5(6);
+      Branch6(6);
+      Branch7(6);
+      Branch8(6);
+      Branch9(6);
+      Branch10(6);
     // Turn off - (-1~-22 : LED off ; -23 ~ -33 : Branch off)
     case -1:
       LED0(0);

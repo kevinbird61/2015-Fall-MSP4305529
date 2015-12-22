@@ -1,15 +1,31 @@
 #include "LED_Branch.h"
 
-#define SIZE 2
+#define SIZE 22
 /* Pattern , which use with function : next_pattern()*/
-int pattern[SIZE] = {1,2};
+int pattern[SIZE] = 
+{
+11,12,13,14,15,
+16,17,18,19,20,
+21,-22,-21,-20,-19,
+-18,-17,-16,-15,-14,
+-13,-12  
+//11,-12,11,-12,11,-12,12,-13,11,-12,12,-13,70
+};
+int pattern_delay[SIZE] = 
+{
+2,2,2,2,2,
+2,2,2,2,2,
+2,2,2,2,2,
+2,2,2,2,2,
+2,2
+};
 /* store the number of one transmition */
 int package = 8;
 /* every 0.5 sec , each change ; first byte => start up 
 signal_store : for one signal instruction from piano
 local_signal : for one signal instruction by autoplay (src : pattern[]) ;
 */
-int signal_store[8] = {255,0,0,0,0,0,0,0};
+int signal_store[8] = {30,0,0,0,0,0,0,0};
 /* Retain status , 0 for autoplay and 1 for piano */
 int status = 0;
 /* For TA1 , if when piano : 1 , autoplay = 0 */
@@ -41,13 +57,13 @@ int main( void )
   GPIO_IE_UP();
   // Setting Timer - For delay interrupt => 0.5 sec
   TA1CTL |= TASSEL_1 + MC_1 + TACLR;
-  TA1CCR0 = 16384;
+  TA1CCR0 = 32768;
   TA1CCTL0 = CCIE;
   // Setting Timer - For delay interrupt and check for every 4 sec , TA0R / 4 , so set the TA0CCR0 = original 1 sec
-  TA0CTL |= TASSEL_1 + ID_2 + MC_1 + TACLR;
+  TA0CTL |= TASSEL_1 + ID_3 + MC_1 + TACLR;
   TA0CCR0 = 32768;
   TA0CCTL0 = CCIE;
-
+  
   __bis_SR_register(GIE);
   while(1){};
   return 0;
@@ -86,11 +102,14 @@ __interrupt void TIMER1_A0_ISR(void){
         // store_signal
         while (!(UCA0IFG&UCTXIFG));
         UCA0TXBUF = local_signal[j];
-        if(j!=0){  
-        local_signal[j] = 0;
-        }
+        //if(j!=0){  
+        //local_signal[j] = 0;
+        //}
       UCA0IE = 0x00;
       }
+      // Setting Timer Delay here ; Disable TA1CCTL0 = ~CCIE; and Enable TA2 To do the Delay you want
+      unsigned long count = 0;
+      while(count< (5000 * pattern_delay[i])){count++;}
     }
   }
 }
@@ -162,6 +181,7 @@ __interrupt void P2_ISR(void){
   }
   status = 1;
   // Clear the TA0
+  TA0CCTL0 = CCIE;
   TA0R = 0;
   // Check the status
   check_status();
@@ -230,6 +250,7 @@ __interrupt void P1_ISR(void){
   }
   status = 1;
   // Clear the TA0
+  TA0CCTL0 = CCIE;
   TA0R = 0;
   // Check the status
   check_status();
