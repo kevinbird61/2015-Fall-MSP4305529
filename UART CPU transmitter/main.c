@@ -98,7 +98,7 @@ TIMER A1 ISR (TA1CCIFG0)
 #pragma vector=TIMER1_A0_VECTOR
 __interrupt void TIMER1_A0_ISR(void){
   // read signal_store[] , and then convert to uart signal
-  int i;
+  int i,j;
   // check_result == 1 => piano
   if(check_result==1){
     // deliver the signal (Using UCA0TXBUF) => for 8 byte // 
@@ -108,7 +108,9 @@ __interrupt void TIMER1_A0_ISR(void){
         // store_signal
         while (!(UCA0IFG&UCTXIFG));
         UCA0TXBUF = signal_store[i];
-      signal_store[i] = 0;
+        if(i != 0){
+        signal_store[i] = 0;
+        }
       UCA0IE = 0x00;
     }
   }
@@ -118,13 +120,15 @@ __interrupt void TIMER1_A0_ISR(void){
     int size = SIZE;
     for(i=0;i<size;i++){
       next_pattern(pattern[i]);
-      for(i = 0 ; i < package ; i++){
+      for(j = 0 ; j < package ; j++){
       // Deliver for 8 times , i for times
       UCA0IE = 0x02;
         // store_signal
         while (!(UCA0IFG&UCTXIFG));
-        UCA0TXBUF = local_signal[i];
-      local_signal[i] = 0;
+        UCA0TXBUF = local_signal[j];
+        if(j!=0){  
+        local_signal[j] = 0;
+        }
       UCA0IE = 0x00;
       }
     }
@@ -202,7 +206,7 @@ __interrupt void P2_ISR(void){
   // Check the status
   check_status();
   P2IFG = 0x00;
-  P2IE = 0x60; // Enable all interrupt : 0011 1110
+  P2IE = 60; // Enable all interrupt : 0011 1110
 }
 /*===========================================
 PORT1 ISR
@@ -270,7 +274,7 @@ __interrupt void P1_ISR(void){
   // Check the status
   check_status();
   P1IFG = 0x00;
-  P1IE = 0x60; // Enable all interrupt : 0011 1100
+  P1IE = 60; // Enable all interrupt : 0011 1100
 }
 /*===========================================
 User define function
