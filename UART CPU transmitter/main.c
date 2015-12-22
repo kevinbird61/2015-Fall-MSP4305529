@@ -313,6 +313,7 @@ void check_status(){
 void next_pattern(int select){
   // Enable using integer to control LED pattern
   switch(select){
+    // 0~21 : LED on ; 22 ~ 32 : Branch-R ; 33 ~ 43 : Branch-G ; 44 ~ 55 : Branch-B
     case 0:
       LED0(1);
       break;
@@ -416,6 +417,173 @@ void next_pattern(int select){
     // G
     case 33:
       Branch0(1);
+      break;
+    case 34:
+      Branch1(1);  
+      break;
+    case 35:
+      Branch2(1);  
+    break;
+    case 36:
+      Branch3(1);  
+    break; 
+    case 37:
+      Branch4(1);  
+    break; 
+    case 38:
+      Branch5(1);  
+    break; 
+    case 39:
+      Branch6(1);  
+    break; 
+    case 40:
+      Branch7(1);  
+    break; 
+    case 41:
+      Branch8(1);  
+    break; 
+    case 42:
+      Branch9(1);  
+    break; 
+    case 43:
+      Branch10(1);  
+    break; 
+    // B
+    case 44:
+      Branch0(2);  
+    break; 
+    case 45:
+      Branch1(2);  
+    break; 
+    case 46:
+      Branch2(2);  
+    break; 
+    case 47:
+      Branch3(2);  
+    break; 
+    case 48:
+      Branch4(2);  
+    break; 
+    case 49:
+      Branch5(2);  
+    break; 
+    case 50:
+      Branch6(2);  
+    break; 
+    case 51:
+      Branch7(2);  
+    break; 
+    case 52:
+      Branch8(2);  
+    break; 
+    case 53:
+      Branch9(2);  
+    break; 
+    case 54:
+      Branch10(2);  
+    break; 
+    // Other Color change - add later
+    
+    // Turn off - (-1~-22 : LED off ; -23 ~ -33 : Branch off)
+    case -1:
+      LED0(0);
+    break;
+    case -2:
+      LED1(0);
+    break;
+    case -3:
+      LED2(0);
+    break;
+    case -4:
+      LED3(0);
+    break;
+    case -5:
+      LED4(0);
+    break;
+    case -6:
+      LED5(0);
+    break;
+    case -7:
+      LED6(0);
+    break;
+    case -8:
+      LED7(0);
+    break;
+    case -9:
+      LED8(0);
+    break;
+    case -10:
+      LED9(0);
+    break;
+    case -11:
+      LED10(0);
+    break;
+    case -12:
+      LED11(0);
+    break;
+    case -13:
+      LED12(0);
+    break;
+    case -14:
+      LED13(0);
+    break;
+    case -15:
+      LED14(0);
+    break;
+    case -16:
+      LED15(0);
+    break;
+    case -17:
+      LED16(0);
+    break;
+    case -18:
+      LED17(0);
+    break;
+    case -19:
+      LED18(0);
+    break;
+    case -20:
+      LED19(0);
+    break;
+    case -21:
+      LED20(0);
+    break;
+    case -22:
+      LED21(0);
+    break;
+    // Branch
+    case -23:
+      Branch0(6);
+    break;
+    case -24:
+      Branch1(6);
+    break;
+    case -25:
+      Branch2(6);
+    break;
+    case -26:
+      Branch3(6);
+    break;
+    case -27:
+      Branch4(6);
+    break;
+    case -28:
+      Branch5(6);
+    break;
+    case -29:
+      Branch6(6);
+    break;
+    case -30:
+      Branch7(6);
+    break;
+    case -31:
+      Branch8(6);
+    break;
+    case -32:
+      Branch9(6);
+    break;
+    case -33:
+      Branch10(6);
     break;
   }
 }
