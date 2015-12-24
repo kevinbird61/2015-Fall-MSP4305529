@@ -712,14 +712,21 @@ void next_pattern(int select){
     break; 
     // Other Color change - add later
     case 55:
-       // For Testing
+       // LED1 Turn all on
       LED0(1);
       LED1(1);
       LED2(1);
       LED3(1);
       LED4(1);
+      LED5(1);
+      LED6(1);
+      LED7(1);
+      LED8(1);
+      LED9(1);
+      LED10(1);
     break;
     case 56:
+      // LED2 Turn all on
       LED11(1);
       LED12(1);
       LED13(1);
@@ -728,6 +735,116 @@ void next_pattern(int select){
       LED16(1);
       LED17(1);
       LED18(1);
+      LED19(1);
+      LED20(1);
+      LED21(1);
+      break;
+    case 57:
+      // All Branch Turn Red
+      Branch0(0);
+      Branch1(0);
+      Branch2(0);
+      Branch3(0);
+      Branch4(0);
+      Branch5(0);
+      Branch6(0);
+      Branch7(0);
+      Branch8(0);
+      Branch9(0);
+      Branch10(0);
+      break;
+    case 58:
+      // All Branch Turn Green
+      Branch0(1);
+      Branch1(1);
+      Branch2(1);
+      Branch3(1);
+      Branch4(1);
+      Branch5(1);
+      Branch6(1);
+      Branch7(1);
+      Branch8(1);
+      Branch9(1);
+      Branch10(1);
+      break;
+    case 59:
+      // All Branch Turn Blue
+      Branch0(2);
+      Branch1(2);
+      Branch2(2);
+      Branch3(2);
+      Branch4(2);
+      Branch5(2);
+      Branch6(2);
+      Branch7(2);
+      Branch8(2);
+      Branch9(2);
+      Branch10(2);
+      break;
+    // flash on
+    case 60:
+      // Special pattern - flash 1
+      LED0(1);
+      LED1(1);
+      LED4(1);
+      LED11(1);
+      LED12(1);
+      Branch0(2);
+      Branch1(2);
+      break;
+    case 61:
+      // flash 2
+      LED0(1);
+      LED1(1);
+      LED5(1);
+      LED13(1);
+      Branch2(2);
+      break;
+    case 62:
+      // flash 3
+      LED0(1);
+      LED2(1);
+      LED6(1);
+      LED14(1);
+      Branch3(2);
+      break;
+    case 63:
+      // flash 4
+      LED0(1);
+      LED2(1);
+      LED7(1);
+      LED15(1);
+      LED16(1);
+      LED17(1);
+      Branch4(2);
+      Branch5(2);
+      Branch6(2);
+      break;
+    case 64:
+      // flash 5
+      LED0(1);
+      LED2(1);
+      LED8(1);
+      LED18(1);
+      Branch7(2);
+      break;
+    case 65:
+      // flash 6
+      LED0(1);
+      LED3(1);
+      LED9(1);
+      LED19(1);
+      Branch8(2);
+      break;
+    case 66:
+      // flash 7
+      LED0(1);
+      LED3(1);
+      LED10(1);
+      LED20(1);
+      LED21(1);
+      Branch9(2);
+      Branch10(2);
       break;
     case 70:
       // turn off all
@@ -764,7 +881,51 @@ void next_pattern(int select){
       Branch8(6);
       Branch9(6);
       Branch10(6);
+    case 71:
+      Branch0(6);
+      Branch1(6);
+      Branch2(6);
+      Branch3(6);
+      Branch4(6);
+      Branch5(6);
+      Branch6(6);
+      Branch7(6);
+      Branch8(6);
+      Branch9(6);
+      Branch10(6);
+      break;
     // Turn off - (-1~-22 : LED off ; -23 ~ -33 : Branch off)
+    case 80:  
+      // second layer
+      LED1(1);
+      LED2(1);
+      LED3(1);
+      break;
+    case 81:
+      // third layer
+      LED4(1);
+      LED5(1);
+      LED6(1);
+      LED7(1);
+      LED8(1);
+      LED9(1);
+      LED10(1);
+      break;
+    case 82:
+      // last layer
+      LED11(1);
+      LED12(1);
+      LED13(1);
+      LED14(1);
+      LED15(1);
+      LED16(1);
+      LED17(1);
+      LED18(1);
+      LED19(1);
+      LED20(1);
+      LED21(1);
+      break;
+    
     case -1:
       LED0(0);
     break;
@@ -865,5 +1026,100 @@ void next_pattern(int select){
     case -33:
       Branch10(6);
     break;
+    // flash off 
+    case -60:
+      // Special pattern - flash 1
+      LED0(0);
+      LED1(0);
+      LED4(0);
+      LED11(0);
+      LED12(0);
+      Branch0(6);
+      Branch1(6);
+      break;
+    case -61:
+      // flash 2
+      LED0(0);
+      LED1(0);
+      LED5(0);
+      LED13(0);
+      Branch2(6);
+      break;
+    case -62:
+      // flash 3
+      LED0(0);
+      LED2(0);
+      LED6(0);
+      LED14(0);
+      Branch3(6);
+      break;
+    case -63:
+      // flash 4
+      LED0(0);
+      LED2(0);
+      LED7(0);
+      LED15(0);
+      LED16(0);
+      LED17(0);
+      Branch4(6);
+      Branch5(6);
+      Branch6(6);
+      break;
+    case -64:
+      // flash 5
+      LED0(0);
+      LED2(0);
+      LED8(0);
+      LED18(0);
+      Branch7(6);
+      break;
+    case -65:
+      // flash 6
+      LED0(0);
+      LED3(0);
+      LED9(0);
+      LED19(0);
+      Branch8(6);
+      break;
+    case -66:
+      // flash 7
+      LED0(0);
+      LED3(0);
+      LED10(0);
+      LED20(0);
+      LED21(0);
+      Branch9(6);
+      Branch10(6);
+      break;
+    case -80:  
+      // second layer
+      LED1(0);
+      LED2(0);
+      LED3(0);
+      break;
+    case -81:
+      // third layer
+      LED4(0);
+      LED5(0);
+      LED6(0);
+      LED7(0);
+      LED8(0);
+      LED9(0);
+      LED10(0);
+      break;
+    case -82:
+      // last layer
+      LED11(0);
+      LED12(0);
+      LED13(0);
+      LED14(0);
+      LED15(0);
+      LED16(0);
+      LED17(0);
+      LED18(0);
+      LED19(0);
+      LED20(0);
+      LED21(0);
+      break;
   }
 }

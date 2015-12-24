@@ -1,26 +1,9 @@
 #include "LED_Branch.h"
-
-#define SIZE 22
-/* Pattern , which use with function : next_pattern()*/
-int pattern[SIZE] = 
-{
-11,12,13,14,15,
-16,17,18,19,20,
-21,-22,-21,-20,-19,
--18,-17,-16,-15,-14,
--13,-12  
-//11,-12,11,-12,11,-12,12,-13,11,-12,12,-13,70
-};
-int pattern_delay[SIZE] = 
-{
-2,2,2,2,2,
-2,2,2,2,2,
-2,2,2,2,2,
-2,2,2,2,2,
-2,2
-};
+#include "LED_pattern.h"
+/* Pattern , which use with function : next_pattern() => read pattern[] and use test_pattern_delay[] => in LED_pattern*/
 /* store the number of one transmition */
 int package = 8;
+int loop = 0;
 /* every 0.5 sec , each change ; first byte => start up 
 signal_store : for one signal instruction from piano
 local_signal : for one signal instruction by autoplay (src : pattern[]) ;
@@ -59,6 +42,7 @@ int main( void )
   TA1CTL |= TASSEL_1 + MC_1 + TACLR;
   TA1CCR0 = 32768;
   TA1CCTL0 = CCIE;
+  
   // Setting Timer - For delay interrupt and check for every 4 sec , TA0R / 4 , so set the TA0CCR0 = original 1 sec
   TA0CTL |= TASSEL_1 + ID_3 + MC_1 + TACLR;
   TA0CCR0 = 32768;
@@ -93,7 +77,9 @@ __interrupt void TIMER1_A0_ISR(void){
   else{
     // check_result == 0 => autoplay
     // local_signal
+    loop += 1;
     int size = SIZE;
+    if(loop == 1){
     for(i=0;i<size;i++){
       next_pattern(pattern[i]);
       for(j = 0 ; j < package ; j++){
@@ -108,9 +94,12 @@ __interrupt void TIMER1_A0_ISR(void){
       UCA0IE = 0x00;
       }
       // Setting Timer Delay here ; Disable TA1CCTL0 = ~CCIE; and Enable TA2 To do the Delay you want
-      unsigned long count = 0;
-      while(count< (5000 * pattern_delay[i])){count++;}
+      unsigned long long count = 0;
+      while(count< (DELAY_FRACTION * pattern_delay[i])){
+        count++;}
     }
+    }
+  check_status();
   }
 }
 /*===========================================
@@ -181,12 +170,11 @@ __interrupt void P2_ISR(void){
   }
   status = 1;
   // Clear the TA0
-  TA0CCTL0 = CCIE;
   TA0R = 0;
   // Check the status
   check_status();
   P2IFG = 0x00;
-  P2IE = 60; // Enable all interrupt : 0011 1110
+  P2IE |= (BIT5 | BIT4 | BIT3 | BIT2); // Enable all interrupt : 0011 1110
 }
 /*===========================================
 PORT1 ISR
@@ -250,12 +238,11 @@ __interrupt void P1_ISR(void){
   }
   status = 1;
   // Clear the TA0
-  TA0CCTL0 = CCIE;
   TA0R = 0;
   // Check the status
   check_status();
   P1IFG = 0x00;
-  P1IE = 60; // Enable all interrupt : 0011 1100
+  P1IE |= (BIT5 | BIT4 | BIT3 | BIT2); // Enable all interrupt : 0011 1100
 }
 /*===========================================
 User define function
