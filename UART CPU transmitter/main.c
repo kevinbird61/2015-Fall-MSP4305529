@@ -1,9 +1,16 @@
 #include "LED_Branch.h"
 #include "LED_pattern.h"
+#include "LED_pattern_1.h"
+
+#define PATTERN_MOD pattern_mod1[i]
+#define DELAY_MOD DELAY_FRACTION_mod1
+#define PD_MOD pattern_delay_mod1[i]
+
 /* Pattern , which use with function : next_pattern() => read pattern[] and use test_pattern_delay[] => in LED_pattern*/
 /* store the number of one transmition */
 int package = 8;
-int loop = 0;
+//int loop = 1;
+//int pattern_num = 2;
 /* every 0.5 sec , each change ; first byte => start up 
 signal_store : for one signal instruction from piano
 local_signal : for one signal instruction by autoplay (src : pattern[]) ;
@@ -24,7 +31,7 @@ void GPIO_IE_UP();
 int main( void )
 {
   // Stop watchdog timer to prevent time out rese
-  WDTCTL = WDTPW + WDTHOLD;
+ WDTCTL = WDTPW + WDTHOLD;
   // Enable the special purpose TX:3.3 RX:3.4
   P3SEL = BIT3 + BIT4;
   UCA0CTL1 |= UCSWRST;
@@ -77,11 +84,17 @@ __interrupt void TIMER1_A0_ISR(void){
   else{
     // check_result == 0 => autoplay
     // local_signal
-    loop += 1;
+    //loop += 1;
     int size = SIZE;
-    if(loop == 1){
     for(i=0;i<size;i++){
-      next_pattern(pattern[i]);
+      //next_pattern(pattern_mod1[i]);
+      next_pattern(PATTERN_MOD);
+      /*if(loop%pattern_num==1){
+        next_pattern(pattern_mod1[i]);
+      }
+      else if(loop%pattern==0){
+        next_pattern(pattern_mod2[i]);
+      }*/
       for(j = 0 ; j < package ; j++){
       // Deliver for 8 times , i for times
       UCA0IE = 0x02;
@@ -95,9 +108,16 @@ __interrupt void TIMER1_A0_ISR(void){
       }
       // Setting Timer Delay here ; Disable TA1CCTL0 = ~CCIE; and Enable TA2 To do the Delay you want
       unsigned long long count = 0;
-      while(count< (DELAY_FRACTION * pattern_delay[i])){
-        count++;}
-    }
+      while(count< (DELAY_MOD * PD_MOD)){
+          count++;}
+      /*if(loop%pattern_num==1){
+        while(count< (DELAY_FRACTION_mod1 * pattern_delay_mod1[i])){
+          count++;}
+      }
+      else if(loop%pattern==0){
+        while(count< (DELAY_FRACTION_mod2 * pattern_delay_mod2[i])){
+          count++;}
+      }*/
     }
   check_status();
   }

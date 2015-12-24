@@ -846,6 +846,31 @@ void next_pattern(int select){
       Branch9(2);
       Branch10(2);
       break;
+    case 67:
+       // LED1 Turn all on
+      LED0(1);
+      LED1(1);
+      LED2(1);
+      LED3(1);
+      LED4(1);
+      LED5(1);
+      LED6(1);
+      LED7(1);
+      LED8(1);
+      LED9(1);
+      LED10(1);
+      LED11(1);
+      LED12(1);
+      LED13(1);
+      LED14(1);
+      LED15(1);
+      LED16(1);
+      LED17(1);
+      LED18(1);
+      LED19(1);
+      LED20(1);
+      LED21(1);
+    break;
     case 70:
       // turn off all
       LED0(0);
